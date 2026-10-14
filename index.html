@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>LBSA Casablanca</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Instrument+Sans:wght@400;500;600&family=Reem+Kufi:wght@500&display=swap">
+<style>
+/* Layout: slim header, split hero (headline + garment collage), filter chips, 3-col product grid, slide-in cart drawer */
+:root{
+  --bg:#f3f1ec; --surface:#fbfaf7; --ink:#1d2433; --muted:#5f6675; --line:#d9d6ce;
+  --accent:#c8781e; --accent-ink:#ffffff; --deep:#22355c;
+  --display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --body:"Instrument Sans",ui-sans-serif,system-ui,sans-serif;
+  --arabic:"Reem Kufi","Noto Kufi Arabic",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#13161d; --surface:#1b1f28; --ink:#ecebe6; --muted:#a2a7b3; --line:#2e3441;
+  --accent:#e4963c; --accent-ink:#1a1206; --deep:#8fa8d8; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#13161d; --surface:#1b1f28; --ink:#ecebe6; --muted:#a2a7b3; --line:#2e3441;
+  --accent:#e4963c; --accent-ink:#1a1206; --deep:#8fa8d8; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.55}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:20px}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0}
+
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);border-bottom:1px solid var(--line)}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:14px}
+.logo{font-family:var(--display);font-weight:800;font-size:24px;letter-spacing:.02em;display:flex;align-items:baseline;gap:8px}
+.logo span{font-family:var(--arabic);font-size:18px;color:var(--accent);font-weight:500}
+.cart-btn{display:flex;align-items:center;gap:8px;border:1px solid var(--ink);background:none;border-radius:999px;padding:8px 16px;font-weight:600}
+.count{background:var(--accent);color:var(--accent-ink);border-radius:999px;min-width:22px;height:22px;display:inline-grid;place-items:center;font-size:12px;font-variant-numeric:tabular-nums}
+
+.hero{display:grid;grid-template-columns:1.1fr 1fr;gap:40px;align-items:center;padding-block:48px 40px}
+.eyebrow{text-transform:uppercase;letter-spacing:.14em;font-size:12px;color:var(--muted);font-weight:600}
+.hero h1{font-size:clamp(40px,6vw,76px);line-height:.95;font-weight:800;margin-block:14px 18px}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero p{max-width:46ch;color:var(--muted);margin:0 0 24px}
+.cta{display:inline-block;background:var(--ink);color:var(--bg);border:0;border-radius:999px;padding:13px 26px;font-weight:600;text-decoration:none}
+.perks{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:26px;font-size:13px;color:var(--muted)}
+.perks b{color:var(--ink);font-weight:600}
+.collage{position:relative;aspect-ratio:1/1;max-width:100%}
+.collage .tile{position:absolute;border-radius:6px;display:grid;place-items:center}
+.collage svg{width:70%;height:70%}
+.t1{inset:0 35% 30% 0;background:var(--deep)}
+.t2{inset:12% 0 42% 70%;background:var(--accent)}
+.t3{inset:60% 0 0 40%;background:var(--surface);border:1px solid var(--line)}
+.stamp{position:absolute;left:4%;bottom:6%;font-family:var(--arabic);font-size:clamp(28px,4vw,44px);color:var(--ink)}
+
+.toolbar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:14px;padding-block:24px 18px;border-top:1px solid var(--line)}
+.toolbar h2{font-size:30px;font-weight:800}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 15px;font-size:14px}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px 22px;padding-bottom:64px}
+.card{display:flex;flex-direction:column;gap:10px}
+.shot{aspect-ratio:4/5;max-width:100%;border-radius:4px;display:grid;place-items:center;position:relative;overflow:hidden}
+.shot svg{width:62%;height:62%;transition:transform .35s ease}
+.card:hover .shot svg{transform:scale(1.05) rotate(-2deg)}
+.tag{position:absolute;top:12px;left:12px;background:var(--surface);color:var(--ink);font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;padding:4px 9px;border-radius:3px}
+.row{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.card h3{font-size:18px;font-weight:500}
+.price{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.price s{color:var(--muted);font-weight:400;margin-right:6px;font-size:13px}
+.meta{color:var(--muted);font-size:13px}
+.sizes{display:flex;flex-wrap:wrap;gap:6px}
+.size{min-width:38px;height:34px;border:1px solid var(--line);background:none;border-radius:4px;font-size:13px}
+.size[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:var(--bg)}
+.add{border:0;background:var(--accent);color:var(--accent-ink);border-radius:4px;padding:11px;font-weight:600}
+.add:disabled{opacity:.45;cursor:not-allowed}
+
+.scrim{position:fixed;inset:0;background:rgb(10 12 18 / .45);z-index:40}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(420px,100%);background:var(--surface);z-index:50;display:flex;flex-direction:column;padding:calc(18px + env(safe-area-inset-top,0px)) 20px calc(18px + env(safe-area-inset-bottom,0px));transform:translateX(100%);transition:transform .3s ease;border-left:1px solid var(--line)}
+.drawer.open{transform:none}
+.dhead{display:flex;justify-content:space-between;align-items:center;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.dhead h2{font-size:22px}
+.x{border:0;background:none;font-size:26px;line-height:1}
+.items{flex:1;overflow:auto;display:flex;flex-direction:column;gap:14px;padding-block:16px}
+.item{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:12px;align-items:center}
+.thumb{width:64px;height:76px;border-radius:3px;display:grid;place-items:center}
+.thumb svg{width:70%;height:70%}
+.qty{display:flex;align-items:center;gap:8px;margin-top:4px}
+.qty button{width:26px;height:26px;border:1px solid var(--line);background:none;border-radius:4px}
+.empty{color:var(--muted);text-align:center;padding-block:40px}
+.sum{border-top:1px solid var(--line);padding-top:14px;display:flex;flex-direction:column;gap:6px;font-variant-numeric:tabular-nums}
+.sum .total{font-size:18px;font-weight:600}
+form{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+label{font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:4px}
+input,select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:10px}
+.ok{background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:16px;margin-top:12px}
+.ok h3{font-size:18px;margin-bottom:6px}
+
+footer{border-top:1px solid var(--line);padding-block:28px;color:var(--muted);font-size:13px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
+
+@media (max-width:860px){.hero{grid-template-columns:1fr;padding-block:32px}.collage{max-width:440px}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.grid{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header><div class="wrap bar">
+  <div class="logo">LBSA <span>لبسة</span></div>
+  <button class="cart-btn" id="openCart" type="button">Panier <span class="count" id="count">0</span></button>
+</div></header>
+
+<main class="wrap">
+  <section class="hero">
+    <div>
+      <div class="eyebrow">Collection automne 2026 · Casablanca</div>
+      <h1>Coupé ici,<br>porté <em>partout</em>.</h1>
+      <p>Djellabas modernes, chemises en lin et basiques en coton marocain. Confection en petites séries dans notre atelier de Derb Omar.</p>
+      <a class="cta" href="#shop">Voir la collection</a>
+      <div class="perks">
+        <span><b>Paiement</b> à la livraison</span>
+        <span><b>Livraison</b> 24–72 h au Maroc</span>
+        <span><b>Échange</b> gratuit sous 7 jours</span>
+      </div>
+    </div>
+    <div class="collage" aria-hidden="true">
+      <div class="tile t1" id="c1"></div>
+      <div class="tile t2" id="c2"></div>
+      <div class="tile t3" id="c3"></div>
+      <div class="stamp">صنع في المغرب</div>
+    </div>
+  </section>
+
+  <section id="shop">
+    <div class="toolbar">
+      <h2>La boutique</h2>
+      <div class="chips" id="chips"></div>
+    </div>
+    <div class="grid" id="grid"></div>
+  </section>
+</main>
+
+<footer class="wrap">
+  <span>LBSA · 14 rue Derb Omar, Casablanca</span>
+  <span>WhatsApp : +212 6 00 00 00 00</span>
+</footer>
+
+<div class="scrim" id="scrim" hidden></div>
+<aside class="drawer" id="drawer" aria-label="Panier">
+  <div class="dhead"><h2>Votre panier</h2><button class="x" id="closeCart" type="button" aria-label="Fermer">×</button></div>
+  <div class="items" id="items"></div>
+  <div id="checkout"></div>
+</aside>
+
+<script>
+const SHAPES={
+  shirt:'<path d="M35 10 L50 18 L65 10 L88 24 L80 42 L70 37 L70 92 L30 92 L30 37 L20 42 L12 24 Z"/><path d="M50 18 L50 92" stroke="rgba(0,0,0,.18)" stroke-width="1.5" fill="none"/>',
+  djellaba:'<path d="M38 6 Q50 0 62 6 L64 16 L86 30 L78 46 L68 40 L74 96 L26 96 L32 40 L22 46 L14 30 L36 16 Z"/><path d="M50 16 L50 60" stroke="rgba(0,0,0,.2)" stroke-width="2" stroke-dasharray="3 3" fill="none"/>',
+  pants:'<path d="M28 8 L72 8 L76 94 L56 94 L50 34 L44 94 L24 94 Z"/><path d="M28 16 L72 16" stroke="rgba(0,0,0,.18)" stroke-width="1.5"/>',
+  jacket:'<path d="M34 8 L50 22 L66 8 L88 22 L84 70 L72 66 L72 94 L28 94 L28 66 L16 70 L12 22 Z"/><path d="M50 22 L44 94 M50 22 L56 94" stroke="rgba(0,0,0,.2)" stroke-width="1.5" fill="none"/>',
+  dress:'<path d="M38 6 L50 14 L62 6 L66 30 L60 40 L82 94 L18 94 L40 40 L34 30 Z"/><path d="M38 40 L62 40" stroke="rgba(0,0,0,.2)" stroke-width="2"/>',
+  tee:'<path d="M36 12 Q50 22 64 12 L88 24 L80 40 L70 36 L70 90 L30 90 L30 36 L20 40 L12 24 Z"/>',
+  cap:'<path d="M20 60 Q22 26 50 24 Q78 26 80 60 Z"/><path d="M60 58 L96 64 L80 70 L60 64 Z"/><circle cx="50" cy="24" r="3"/>',
+  babouche:'<path d="M10 66 Q14 48 40 46 L74 46 Q92 48 92 62 Q92 74 70 74 L22 74 Q10 74 10 66 Z"/><path d="M40 46 Q56 34 74 46" fill="none" stroke="rgba(0,0,0,.25)" stroke-width="2"/>'
+};
+const svg=(s,c)=>`<svg viewBox="0 0 100 100" fill="${c}">${SHAPES[s]}</svg>`;
+
+const PRODUCTS=[
+ {id:1,name:"Djellaba Medina",cat:"Traditionnel",shape:"djellaba",color:"#2f4a7a",bg:"#dfe3ea",price:690,old:850,fabric:"Laine légère, capuche brodée main",sizes:["S","M","L","XL"],tag:"Nouveau"},
+ {id:2,name:"Chemise lin Essaouira",cat:"Homme",shape:"shirt",color:"#e9e2d0",bg:"#c9b48f",price:340,fabric:"100 % lin, col mao",sizes:["S","M","L","XL"]},
+ {id:3,name:"Robe Kaftan Fès",cat:"Femme",shape:"dress",color:"#a2462f",bg:"#f0dccf",price:890,fabric:"Crêpe, sfifa ton sur ton",sizes:["XS","S","M","L"],tag:"Best-seller"},
+ {id:4,name:"Pantalon Atlas",cat:"Homme",shape:"pants",color:"#3d3a33",bg:"#d8d3c6",price:420,fabric:"Coton sergé, coupe droite",sizes:["38","40","42","44"]},
+ {id:5,name:"Veste Derb Omar",cat:"Femme",shape:"jacket",color:"#c8781e",bg:"#26324a",price:760,old:920,fabric:"Velours côtelé, doublure coton",sizes:["S","M","L"]},
+ {id:6,name:"T-shirt Casa Blue",cat:"Homme",shape:"tee",color:"#2b5aa0",bg:"#e4e6ec",price:149,fabric:"Coton peigné 220 g",sizes:["S","M","L","XL","XXL"]},
+ {id:7,name:"Casquette Tadelakt",cat:"Accessoires",shape:"cap",color:"#b85c38",bg:"#efe6da",price:129,fabric:"Toile coton, sangle cuir",sizes:["Unique"]},
+ {id:8,name:"Babouches Tafilalet",cat:"Accessoires",shape:"babouche",color:"#d9a52b",bg:"#34302a",price:260,fabric:"Cuir de chèvre tanné à Fès",sizes:["39","40","41","42","43"],tag:"Fait main"},
+ {id:9,name:"Gandoura Rif",cat:"Traditionnel",shape:"djellaba",color:"#f2efe7",bg:"#5f7a6a",price:480,fabric:"Coton brodé, manches courtes",sizes:["M","L","XL"]}
+];
+const CATS=["Tout","Homme","Femme","Traditionnel","Accessoires"];
+const DH=n=>n.toLocaleString("fr-MA")+" DH";
+const $=id=>document.getElementById(id);
+
+let filter="Tout", picked={}, cart=[], done=null;
+try{cart=JSON.parse(localStorage.getItem("lbsa-cart")||"[]")}catch(e){cart=[]}
+const save=()=>{try{localStorage.setItem("lbsa-cart",JSON.stringify(cart))}catch(e){}};
+
+$("c1").innerHTML=svg("djellaba","#f3f1ec");
+$("c2").innerHTML=svg("cap","#1d2433");
+$("c3").innerHTML=svg("babouche","#c8781e");
+
+function renderChips(){
+  $("chips").innerHTML=CATS.map(c=>`<button type="button" class="chip" aria-pressed="${c===filter}" data-c="${c}">${c}</button>`).join("");
+}
+function renderGrid(){
+  const list=PRODUCTS.filter(p=>filter==="Tout"||p.cat===filter);
+  $("grid").innerHTML=list.map(p=>{
+    const sel=picked[p.id]??(p.sizes.length===1?p.sizes[0]:null);
+    return `<article class="card">
+      <div class="shot" style="background:${p.bg}">${p.tag?`<span class="tag">${p.tag}</span>`:""}${svg(p.shape,p.color)}</div>
+      <div class="row"><h3>${p.name}</h3><span class="price">${p.old?`<s>${DH(p.old)}</s>`:""}${DH(p.price)}</span></div>
+      <div class="meta">${p.fabric}</div>
+      <div class="sizes" role="group" aria-label="Taille">${p.sizes.map(s=>`<button type="button" class="size" data-p="${p.id}" data-s="${s}" aria-pressed="${sel===s}">${s}</button>`).join("")}</div>
+      <button type="button" class="add" data-add="${p.id}" ${sel?"":"disabled"}>${sel?"Ajouter au panier":"Choisissez une taille"}</button>
+    </article>`}).join("");
+}
+function totals(){const sub=cart.reduce((a,i)=>a+i.qty*PRODUCTS.find(p=>p.id===i.id).price,0);const ship=sub===0||sub>=500?0:35;return{sub,ship,total:sub+ship}}
+function renderCart(){
+  $("count").textContent=cart.reduce((a,i)=>a+i.qty,0);
+  if(done){
+    $("items").innerHTML=`<div class="ok"><h3>Commande enregistrée</h3><p>Merci ${done.name}. Commande n° ${done.ref} · ${DH(done.total)} à payer à la livraison à ${done.city}. Nous vous appelons au ${done.phone} pour confirmer.</p></div>`;
+    $("checkout").innerHTML=`<button class="cta" type="button" id="again" style="width:100%">Continuer mes achats</button>`;return;
+  }
+  if(!cart.length){$("items").innerHTML=`<p class="empty">Votre panier est vide.<br>Choisissez une taille puis ajoutez un article.</p>`;$("checkout").innerHTML="";return}
+  $("items").innerHTML=cart.map((i,k)=>{const p=PRODUCTS.find(x=>x.id===i.id);return `<div class="item">
+    <div class="thumb" style="background:${p.bg}">${svg(p.shape,p.color)}</div>
+    <div><div>${p.name}</div><div class="meta">Taille ${i.size}</div>
+      <div class="qty"><button type="button" data-q="${k}" data-d="-1" aria-label="Moins">−</button><span>${i.qty}</span><button type="button" data-q="${k}" data-d="1" aria-label="Plus">+</button></div></div>
+    <div class="price">${DH(p.price*i.qty)}</div></div>`}).join("");
+  const t=totals();
+  $("checkout").innerHTML=`<div class="sum">
+    <div class="row"><span>Sous-total</span><span>${DH(t.sub)}</span></div>
+    <div class="row"><span>Livraison</span><span>${t.ship?DH(t.ship):"Offerte"}</span></div>
+    ${t.ship?`<div class="meta">Livraison offerte dès 500 DH</div>`:""}
+    <div class="row total"><span>Total</span><span>${DH(t.total)}</span></div></div>
+    <form id="order">
+      <label for="f-name">Nom complet<input id="f-name" required autocomplete="name"></label>
+      <label for="f-phone">Téléphone<input id="f-phone" required type="tel" pattern="0[5-7][0-9 ]{8,11}" placeholder="06 12 34 56 78"></label>
+      <label for="f-city">Ville<select id="f-city">${["Casablanca","Rabat","Marrakech","Fès","Tanger","Agadir","Meknès","Oujda","Tétouan","Autre"].map(c=>`<option>${c}</option>`).join("")}</select></label>
+      <label for="f-addr">Adresse<input id="f-addr" required autocomplete="street-address"></label>
+      <button class="add" type="submit">Commander · paiement à la livraison</button>
+    </form>`;
+}
+function openCart(o){$("drawer").classList.toggle("open",o);$("scrim").hidden=!o}
+
+document.addEventListener("click",e=>{
+  const b=e.target.closest("button");if(!b)return;
+  if(b.dataset.c){filter=b.dataset.c;renderChips();renderGrid()}
+  else if(b.dataset.s){picked[b.dataset.p]=b.dataset.s;renderGrid()}
+  else if(b.dataset.add){const p=PRODUCTS.find(x=>x.id==b.dataset.add);const size=picked[p.id]??p.sizes[0];
+    const ex=cart.find(i=>i.id===p.id&&i.size===size);ex?ex.qty++:cart.push({id:p.id,size,qty:1});
+    done=null;save();renderCart();openCart(true)}
+  else if(b.dataset.q){const i=cart[b.dataset.q];i.qty+=+b.dataset.d;if(i.qty<1)cart.splice(b.dataset.q,1);save();renderCart()}
+  else if(b.id==="openCart")openCart(true);
+  else if(b.id==="closeCart")openCart(false);
+  else if(b.id==="again"){done=null;renderCart();openCart(false)}
+});
+$("scrim").addEventListener("click",()=>openCart(false));
+document.addEventListener("keydown",e=>{if(e.key==="Escape")openCart(false)});
+document.addEventListener("submit",e=>{
+  if(e.target.id!=="order")return;e.preventDefault();
+  done={name:$("f-name").value.trim(),phone:$("f-phone").value.trim(),city:$("f-city").value,total:totals().total,ref:"LB-"+Math.floor(10000+Math.random()*89999)};
+  cart=[];save();renderCart();
+});
+renderChips();renderGrid();renderCart();
+</script>
+</body>
+</html>

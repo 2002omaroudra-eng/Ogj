@@ -8,3 +8,7 @@ Site e-commerce statique (HTML/CSS/JS, sans dépendances) pour une marque de vê
 
 Ouvrir `index.html` dans un navigateur, ou activer GitHub Pages sur la branche.
 Les produits se modifient dans le tableau `PRODUCTS` du script.
+
+## Guide « Shorts sans visage » (arabe)
+
+`shorts.html` : guide en arabe (RTL) pour lancer une chaîne de vidéos courtes sans visage avec l'IA — niche, script, voix, montage, publication, monétisation réaliste, générateur de prompt et checklist.
